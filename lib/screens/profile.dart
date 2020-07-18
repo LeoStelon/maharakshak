@@ -1,3 +1,4 @@
+import 'package:client/functions/jwt.dart';
 import 'package:client/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,6 +8,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var _jwtProvider = Provider.of<JWTProvider>(context, listen: false);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -20,14 +22,25 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Username',
-              style: TextStyle(fontSize: 18),
-            ),
-            ListTile(
-              leading: Icon(Icons.phone),
-              title: Text('9867897732'),
-              onTap: () {},
+            // Text(
+            //   'Username',
+            //   style: TextStyle(fontSize: 18),
+            // ),
+            FutureBuilder(
+              future: _jwtProvider.phone,
+              builder: (context, snapshot) {
+                Widget child;
+                if (snapshot.hasData) {
+                  child = ListTile(
+                    leading: Icon(Icons.phone),
+                    title: snapshot.data,
+                    onTap: () {},
+                  );
+                } else {
+                  child = Text('');
+                }
+                return child;
+              },
             ),
             Divider(thickness: 1.5),
             Text('COVID Test History'),

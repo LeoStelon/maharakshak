@@ -41,6 +41,7 @@ class HospitalCardComponent extends StatelessWidget {
                           hospitalName,
                           style: TextStyle(
                             fontSize: 18,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),

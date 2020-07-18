@@ -22,12 +22,14 @@ class CustomAppBarComponent extends PreferredSize {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           leadingWidget,
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
+          Flexible(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
             ),
           ),
           Image(

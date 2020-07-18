@@ -1,3 +1,7 @@
+import 'package:client/functions/jwt.dart';
+import 'package:client/localization/localization.dart';
+import 'package:client/main.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +19,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  bool english = true;
 
   String appBarTitle = 'Symptoms Log';
   int _selectedIndex = 0;
@@ -47,6 +52,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //jwt Provider
+    var _jwtProvider = Provider.of<JWTProvider>(context);
+
     return Scaffold(
       key: _drawerKey,
       appBar: CustomAppBarComponent(
@@ -75,36 +83,64 @@ class _MainScreenState extends State<MainScreen> {
             ),
             ListTile(
               leading: Icon(Icons.payment),
-              title: Text('Donate Now'),
+              title: Text(DemoLocalization.of(context).translate('donateNow')),
               onTap: () {
                 Navigator.pushNamed(context, 'donatescreen');
               },
             ),
             ListTile(
               leading: Icon(Icons.vpn_key),
-              title: Text('E - Pass'),
+              title: Text(DemoLocalization.of(context).translate('ePass')),
               onTap: () => openLink('https://covid19.mhpolice.in/'),
             ),
             ListTile(
               leading: Icon(Icons.trending_up),
-              title: Text('Covid Tracker'),
+              title:
+                  Text(DemoLocalization.of(context).translate('covidTracker')),
+              onTap: () => openLink('https://covid19-phdmah.hub.arcgis.com/'),
             ),
             ListTile(
               leading: Icon(Icons.call),
-              title: Text('Helpline'),
+              title: Text(DemoLocalization.of(context).translate('helpline')),
               onTap: () => Navigator.pushNamed(context, 'helplinescreen'),
             ),
             ListTile(
               leading: Icon(Icons.share),
-              title: Text('Share App'),
+              title: Text(DemoLocalization.of(context).translate('share')),
               onTap: () {
                 Share.share('check out my website https://example.com');
               },
             ),
             SwitchListTile(
-              title: Text('Change Language'),
-              onChanged: (bool newValue) {},
-              value: true,
+              title: Text(
+                  DemoLocalization.of(context).translate('changeLanguage') +
+                      '(${english ? 'english' : 'marathi'})'),
+              onChanged: (bool newValue) async {
+                Locale _temp;
+                setState(() {
+                  english = !english;
+                  _jwtProvider.changeLang(english ? 'en' : 'mr');
+                  _temp = Locale(english ? 'en' : 'mr', english ? 'US' : 'IN');
+                });
+                MyApp.setLocale(context, _temp);
+                _drawerKey.currentState.openEndDrawer();
+              },
+              value: english,
+            ),
+            ListTile(
+              title: Text(DemoLocalization.of(context).translate('logout')),
+              onTap: () {
+                //Remove this Tomorrow
+                JWTProvider().removeToken();
+                Navigator.pushNamed(context, 'startupscreen');
+              },
+            ),
+            Container(
+              padding: EdgeInsets.all(32),
+              alignment: Alignment.topRight,
+              child: Text(
+                DemoLocalization.of(context).translate('version') + ' 1.0',
+              ),
             )
           ],
         ),

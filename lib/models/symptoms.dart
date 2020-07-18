@@ -17,6 +17,8 @@ class Symptoms {
   bool datcough;
   bool difficultyBreathing;
   bool shakingChills;
-  String coughfrequency;
-  String bodyTemperature;
+  bool coughfrequency;
+  bool bodyTemperature;
+  //During startup
+  bool fever = false;
 }

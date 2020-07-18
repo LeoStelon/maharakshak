@@ -7,26 +7,38 @@ class JWTProvider extends ChangeNotifier {
 
   // Write value
   //Set Token
-  void setToken(token) async {
+  void setToken(token, phone) async {
     await storage.write(key: 'token', value: token);
-    await storage.write(key: 'isLoggedIn', value: "true");
+    await storage.write(key: 'phone', value: phone);
     notifyListeners();
   }
 
   //Remove Token
   Future<void> removeToken() async {
     await storage.delete(key: 'token');
-    await storage.delete(key: 'isLoggedIn');
+    await storage.delete(key: 'phone');
     notifyListeners();
   }
 
-  //User State
-  Future get user async {
-    return await storage.read(key: "isLoggedIn");
+  //Phone State
+  Future get phone async {
+    return await storage.read(key: "phone");
   }
 
   //Token
   Future get token async {
     return await storage.read(key: "token");
+  }
+
+  //Language
+  //Set Token
+  void changeLang(String language) async {
+    await storage.write(key: 'language', value: language);
+    notifyListeners();
+  }
+
+  //Language State
+  Future get language async {
+    return await storage.read(key: "language");
   }
 }

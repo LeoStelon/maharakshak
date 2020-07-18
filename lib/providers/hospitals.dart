@@ -2,11 +2,15 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../functions/jwt.dart';
 import '../constants/constants.dart';
 
 enum LoaderStatus { busy, idle }
 
 class HospitalsProvider with ChangeNotifier {
+  //Jwtprovider for language
+  var jwtProvider = JWTProvider();
+
   //Loader State
   static LoaderStatus _loaderStatus = LoaderStatus.idle;
   LoaderStatus get loaderStatus => _loaderStatus;
@@ -20,16 +24,19 @@ class HospitalsProvider with ChangeNotifier {
 
   Future<void> updatePvtHospitals() async {
     setLoaderStatus(LoaderStatus.busy);
+    String language = await jwtProvider.language;
+    String token = await jwtProvider.token;
     var response = await http.get(
-      '$url/mixhospitals/?lang=en',
+      '$url/mixhospitals/?lang=$language',
       headers: {
         "Content-type": "application/json",
-        "Authorization": "token 3b93bb1c7d919d069ac99a0c49242752be334e70"
+        "Authorization": "token $token"
       },
     );
     print('enter');
-    var decodedResponse = convert.jsonDecode(response.body);
-    _pvthospitals = decodedResponse;
+    _pvthospitals = convert.json.decode(
+      convert.utf8.decode(response.bodyBytes),
+    );
     setLoaderStatus(LoaderStatus.idle);
     notifyListeners();
   }
@@ -40,17 +47,20 @@ class HospitalsProvider with ChangeNotifier {
   List get govhospitals => [..._govhospitals];
 
   Future<void> updateGovHospitals() async {
-    // setLoaderStatus(LoaderStatus.busy);
+    setLoaderStatus(LoaderStatus.busy);
     _govhospitals = [];
+    String language = await jwtProvider.language;
+    String token = await jwtProvider.token;
     var response = await http.get(
-      '$url/governmenthospitals/?lang=en',
+      '$url/governmenthospitals/?lang=$language',
       headers: {
         "Content-type": "application/json",
-        "Authorization": "token 3b93bb1c7d919d069ac99a0c49242752be334e70"
+        "Authorization": "token $token"
       },
     );
-    var decodedResponse = convert.jsonDecode(response.body);
-    _govhospitals = decodedResponse;
+    _govhospitals = convert.json.decode(
+      convert.utf8.decode(response.bodyBytes),
+    );
     // setLoaderStatus(LoaderStatus.idle);
     notifyListeners();
   }
